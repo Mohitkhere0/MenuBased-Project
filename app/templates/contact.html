@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+header {
+    background-color: #007BFF;
+    color: white;
+    padding: 20px 0;
+    width: 100%;
+    position: fixed; /* Fixed position for header */
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000; /* Ensures the header stays on top */
+}
+
+header .logo img {
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    transition: transform 0.3s, opacity 0.3s; /* Smooth hover effect */
+}
+
+header .logo img:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin-right: 20px; /* Adjusted spacing for navigation items */
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: white;
+    color: #007BFF;
+    border-radius: 5px;
+}
+
+.back-arrow {
+    font-size: 1.5em;
+    margin-right: 5px;
+}
+
+.main-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    width: 100%;
+    padding: 80px 20px 20px; /* Added padding-top to avoid content overlap with fixed header */
+}
+
+.contact-container {
+    background-color: #ffffff;
+    border: 2px solid #007bff;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    flex: 1;
+}
+
+.contact-container h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.contact-info {
+    margin-bottom: 20px;
+}
+
+.contact-info div {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+}
+
+.contact-info img {
+    width: 24px;
+    height: 24px;
+}
+
+.contact-info a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+    color: #0056b3;
+}
+
+.social-profiles {
+    margin-top: 20px;
+}
+
+.social-profiles h1 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.social-profiles a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.social-profiles a:hover {
+    background-color: #0056b3;
+}
+
+.social-profiles img {
+    width: 24px;
+    height: 24px;
+}
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Home">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <br><br><br>
+    <div class="main-container">
+        <div class="contact-container">
+            <h1>Contact Me</h1>
+            <div class="contact-info">
+                <div>
+                    <img src="{{ url_for('static', filename='styles/email.jpeg') }}" alt="Email Icon">
+                    <p>Email: <a href="mohitkumar010305@gmail.com">mohitkumar010305@gmail.com</a></p>
+                </div>
+                <div>
+                    <img src="{{ url_for('static', filename='styles/call.jpeg') }}" alt="Phone Icon">
+                    <p>Phone: <a href="tel:+918829819540">+918829819540</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="contact-container">
+            <h1>My Address</h1>
+            <div class="contact-info">
+                <div>
+                    <p>Pilani 333031, <br>Rajasthan,<br>India</p>
+                </div>
+            </div>
+            <div class="social-profiles">
+                <h1>SocialMedia Profiles</h1>
+                <a href="https://www.linkedin.com/in/mohit-kumar-05932215a/" target="_blank">
+                    <img src="{{ url_for('static', filename='styles/linkedin.jpeg') }}" alt="LinkedIn Icon">
+                    LinkedIn
+                </a>
+                <a href="https://github.com/Mohitkhere0" target="_blank">
+                    <img src="{{ url_for('static', filename='styles/github.jpeg') }}" alt="GitHub Icon">
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

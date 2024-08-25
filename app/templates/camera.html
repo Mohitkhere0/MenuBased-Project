@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Access</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding-top: 80px; /* Adjusting for fixed header */
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 0;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header .logo img {
+            width: 40px;
+            height: 40px;
+            margin-left: 20px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            margin-right: 20px;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 12px;
+            transition: background-color 0.3s, color 0.3s;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            background-color: white;
+            color: #007BFF;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #camera {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+
+        #photo {
+            display: block;
+            margin-top: 20px;
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #333;
+        }
+        /* Button styling */
+
+        #capture, #download {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        #capture:hover, #download:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        #download {
+            display: none; /* Initially hidden */
+        }
+        
+
+        #capture, #download {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Home">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h1>Camera Access</h1>
+    <video id="camera" autoplay></video>
+    <button id="capture">Take Photo</button>
+    <canvas id="photoCanvas" style="display:none;"></canvas>
+    <img id="photo" alt="Your Photo">
+    <a id="download" download="photo.png" style="display:none;">Download Photo</a>
+
+    <script>
+        // Access the camera
+        const video = document.getElementById('camera');
+        const captureButton = document.getElementById('capture');
+        const photoCanvas = document.getElementById('photoCanvas');
+        const photo = document.getElementById('photo');
+        const downloadLink = document.getElementById('download');
+        
+        // Start video stream
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing camera: ", err);
+            });
+
+        // Capture photo
+        captureButton.addEventListener('click', () => {
+            const context = photoCanvas.getContext('2d');
+            photoCanvas.width = video.videoWidth;
+            photoCanvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, photoCanvas.width, photoCanvas.height);
+            
+            // Get the photo as data URL and display it
+            const dataUrl = photoCanvas.toDataURL('image/png');
+            photo.src = dataUrl;
+
+            // Show the download link
+            downloadLink.href = dataUrl;
+            downloadLink.style.display = 'inline-block';
+        });
+    </script>
+</body>
+</html>

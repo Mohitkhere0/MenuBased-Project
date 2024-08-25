@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo img {
+            width: 50px;
+            height: 50px;
+            margin-left: 20px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: white;
+            color: #007BFF;
+            border-radius: 5px;
+        }
+
+        .back-arrow {
+            font-size: 1.5em;
+            margin-right: 5px;
+        }
+
+        main {
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            margin-top: 30px;
+            font-size: 36px;
+            color: #4CAF50;
+        }
+
+        .menu-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 3 items per row */
+            gap: 80px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-item {
+            width: 150px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .menu-item a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .menu-item img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .menu-item:hover {
+            transform: scale(1.05);
+        }
+
+        .menu-item:hover img {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        .menu-item span {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Windows">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('index') }}">Projects</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>WELCOME TO MENU TOOLS</h1><br>
+        <div class="menu-list">
+            <div class="menu-item">
+                <a href="/generate">
+                    <img src="{{ url_for('static', filename='styles/gemini.png') }}" alt="Gemini">
+                    <span>Gemini</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/send_email">
+                    <img src="{{ url_for('static', filename='styles/email.jpeg') }}" alt="Email">
+                    <span>Email</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/search">
+                    <img src="{{ url_for('static', filename='styles/search.jpeg') }}" alt="Search">
+                    <span>Search</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/send_message">
+                    <img src="{{ url_for('static', filename='styles/sms.jpeg') }}" alt="SMS">
+                    <span>SMS</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/upload">
+                    <img src="{{ url_for('static', filename='styles/filter.jpeg') }}" alt="Img Filter">
+                    <span>Image Filter</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/send_whatsapp">
+                    <img src="{{ url_for('static', filename='styles/whatsapp.jpeg') }}" alt="Whatsapp">
+                    <span>Whatsapp</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/instances">
+                    <img src="{{ url_for('static', filename='styles/ec2.png') }}" alt="instance">
+                    <span>EC2 Instance</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/texttospeech">
+                    <img src="{{ url_for('static', filename='styles/t2speak.jpeg') }}" alt="text2audio">
+                    <span>Text2Audio</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/make_call">
+                    <img src="{{ url_for('static', filename='styles/call.jpeg') }}" alt="Call">
+                    <span>Call</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/post_photo">
+                    <img src="{{ url_for('static', filename='styles/insta.jpeg') }}" alt="Instagram">
+                    <span>Post Instagram</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/docker">
+                    <img src="{{ url_for('static', filename='styles/Docker.png') }}" alt="Docker">
+                    <span>Docker</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/geo">
+                    <img src="{{ url_for('static', filename='styles/geo.jpeg') }}" alt="Geo">
+                    <span>Geo Coordination</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/volume">
+                    <img src="{{ url_for('static', filename='styles/volume.jpeg') }}" alt="Volume">
+                    <span>Adjusting volume</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/speech">
+                    <img src="{{ url_for('static', filename='styles/stt.jpeg') }}" alt="Speechtotext">
+                    <span>speech to text</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/camera">
+                    <img src="{{ url_for('static', filename='styles/cam.jpeg') }}" alt="Camera">
+                    <span>Camera</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="/live">
+                    <img src="{{ url_for('static', filename='styles/live.jpeg') }}" alt="live Camera">
+                    <span>Live Camera</span>
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

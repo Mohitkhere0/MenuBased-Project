@@ -1,0 +1,17 @@
+Flask==2.3.4
+google-generativeai==0.1.0 # Update this to the actual version if available
+instagrapi==1.0.2
+yagmail==0.15.285
+schedule==1.1.0
+serpapi==2.1.0
+twilio==7.16.2
+python-dotenv==1.0.0
+boto3==1.26.0
+Pillow==9.5.0
+numpy==1.25.0
+opencv-python==4.8.1.78
+gtts==2.3.0
+geopy==2.3.0
+pycaw==2019.1.2
+geocoder==1.38.1
+comtypes==1.1.10

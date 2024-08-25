@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini LLM Demo</title>
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f8ff;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    }
+
+    header {
+    background-color: #007BFF;
+    color: white;
+    padding: 20px 0;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    }
+
+    header .logo img {
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    transition: transform 0.3s, opacity 0.3s; /* Add transition for smooth effect */
+    }
+
+    header .logo img:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+    }
+
+    nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    margin-right: 20px;
+    }
+
+    nav ul li {
+    margin-right: 50%;
+    }
+
+    nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    
+    padding: 10px;
+    transition: background-color 0.3s, color 0.3s;
+    }
+
+    nav ul li a:hover {
+    background-color: white;
+    color: #007BFF;
+    border-radius: 5px;
+    }
+    .back-arrow {
+    font-size: 1.5em; /* Increase the size of the arrow */
+    margin-right: 5px; /* Space between the arrow and the text */
+    }
+
+    main {
+    padding: 20px;
+    text-align: center;
+    }
+
+    h1 {
+    margin-top: 30px;
+    font-size: 36px;
+    text-align: center;
+    color: #4CAF50;
+    }
+
+    form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    align-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+    }
+
+    label {
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: block;
+    }
+
+    input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    }
+
+    input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    }
+
+    input[type="submit"]:hover {
+    background-color: #45a049;
+    }
+
+    h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: block;
+    text-align: center;
+    }
+
+    p {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 10px auto;
+    }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Home">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h1>Gemini LLM Demo</h1>
+    <form method="post" action="/generate">
+        <label for="prompt">Enter your text prompt:</label><br>
+        <input type="text" id="prompt" name="prompt" required><br><br>
+        <input type="submit" value="Generate Text">
+    </form>
+        <h2>Prompt:</h2>
+        <p>{{ prompt }}</p>
+        <h2>Gemini's response:</h2>
+        <p>{{ response }}</p>
+</body>
+</html>

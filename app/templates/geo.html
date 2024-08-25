@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geo Coordinates and Location</title>
+    <style>
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px; /* Add padding for better spacing on small screens */
+        }
+
+        /* Header Styling */
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo img {
+            width: 40px;
+            height: 40px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin-right: 20px;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 15px;
+            transition: background-color 0.3s, color 0.3s;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            background-color: white;
+            color: #007BFF;
+        }
+
+        /* Container Styling */
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            margin-top: 80px; /* Space for the fixed header */
+        }
+
+        /* Heading Styling */
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Button Styling */
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        /* Location Info Styling */
+        #location-info {
+            margin-top: 25px;
+            font-size: 16px;
+            color: #555555;
+            text-align: left;
+        }
+
+        /* Alert Styling */
+        .alert-container {
+            margin-top: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+
+        .alert-error {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            header {
+                padding: 10px;
+            }
+
+            header .logo img {
+                width: 30px;
+                height: 30px;
+            }
+
+            nav ul li {
+                margin-right: 10px;
+            }
+
+            nav ul li a {
+                font-size: 16px;
+                padding: 8px 12px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            #location-info {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Home">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Find Your Current Geo Coordinates and Location</h1>
+        <button onclick="getLocation()">Get Location</button>
+        <div id="location-info"></div>
+    </div>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                // Request high-accuracy location
+                navigator.geolocation.getCurrentPosition(sendPosition, showError, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            } else {
+                document.getElementById('location-info').innerHTML = "<p>Geolocation is not supported by this browser.</p>";
+            }
+        }
+
+        function sendPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Display the coordinates immediately
+            document.getElementById('location-info').innerHTML = `
+                <p><strong>Latitude:</strong> ${latitude}</p>
+                <p><strong>Longitude:</strong> ${longitude}</p>
+                <p>Retrieving address...</p>
+            `;
+
+            // Send coordinates to the server for reverse geocoding
+            fetch('/get_address', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ latitude: latitude, longitude: longitude }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('location-info').innerHTML += `<p style="color: red;">${data.error}</p>`;
+                } else {
+                    document.getElementById('location-info').innerHTML += `
+                        <p><strong>Address:</strong> ${data.address}</p>
+                    `;
+                }
+            })
+            .catch((error) => {
+                document.getElementById('location-info').innerHTML += `<p style="color: red;">Error fetching address: ${error}</p>`;
+            });
+        }
+
+        function showError(error) {
+            let message = "";
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    message = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    message = "An unknown error occurred.";
+                    break;
+            }
+            document.getElementById('location-info').innerHTML = `<p style="color: red;">${message}</p>`;
+        }
+    </script>
+</body>
+</html>

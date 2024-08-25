@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Camera Stream</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding-top: 80px; /* Offset for fixed header */
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header .logo img {
+            width: 40px;
+            height: 40px;
+            margin-left: 20px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            margin-right: 20px;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 12px;
+            transition: background-color 0.3s, color 0.3s;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            background-color: white;
+            color: #007BFF;
+        }
+
+        .back-arrow {
+            font-size: 1.5em;
+            margin-right: 5px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, color 0.3s ease;
+            text-align: center;
+        }
+
+        h1:hover {
+            color: #ff6347;
+            transform: scale(1.1);
+        }
+
+        #camera-container {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 5px solid transparent;
+            background: linear-gradient(#fff, #fff) padding-box,
+                        linear-gradient(45deg, #ff6347, #74ebd5) border-box;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #camera-container:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        #camera {
+            width: 100%;
+            display: block;
+            border-radius: 20px;
+        }
+
+        @media (max-width: 600px) {
+            #camera-container {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            header {
+                padding: 10px 15px;
+            }
+
+            nav ul li a {
+                font-size: 14px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Home">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h1>Live Camera Stream</h1>
+    <div id="camera-container">
+        <video id="camera" autoplay></video>
+    </div>
+
+    <script>
+        const video = document.getElementById('camera');
+
+        // Access the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing camera: ", err);
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS EC2 Instance Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+    background-color: #007BFF;
+    color: white;
+    padding: 20px 0;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    }
+
+    header .logo img {
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    transition: transform 0.3s, opacity 0.3s; /* Add transition for smooth effect */
+    }
+
+    header .logo img:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+    }
+
+    nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    margin-right: 20px;
+    }
+
+    nav ul li {
+    margin-right: 50%;
+    }
+
+    nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    
+    padding: 10px;
+    transition: background-color 0.3s, color 0.3s;
+    }
+
+    nav ul li a:hover {
+    background-color: white;
+    color: #007BFF;
+    border-radius: 5px;
+    width: 933.60px;
+    height:54px;
+    }
+    .back-arrow {
+    font-size: 1.5em; /* Increase the size of the arrow */
+    margin-right: 5px; /* Space between the arrow and the text */
+    }
+    .alert-container {
+        margin-top: 20px;
+    }
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
+    .alert-error {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+    margin-top: 30px;
+    font-size: 36px;
+    text-align: center;
+    color: #4CAF50;
+    }
+        .launch-container, .header, .action-buttons {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: rgb(255, 255, 255);
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-btn {
+            margin-right: 10px;
+        }
+        .refresh-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .refresh-btn:hover {
+            background-color: #0069d9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Home">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>AWS EC2 Instance Management</h1>
+
+        <!-- Instance Launch Section -->
+        <div class="launch-container">
+            <h2>Launch New Instance</h2>
+            <label for="instance-type">Instance Type:</label>
+            <select id="instance-type" name="instance-type">
+                <option value="t2.micro">t2.micro</option>
+                <option value="t2.small">t2.small</option>
+                <option value="t2.medium">t2.medium</option>
+            </select>
+
+            <label for="ami-id">AMI ID:</label>
+            <input type="text" id="ami-id" name="ami-id" value="ami-0ec0e125bb6c6e8ec">
+
+            <button type="button" onclick="launchInstance()">Launch Instance</button>
+        </div>
+
+        <!-- Header with Filters and Refresh Button -->
+        <div class="header">
+            <div>
+                <input type="text" id="search-instances" placeholder="Search Instances...">
+                <select id="filter-state">
+                    <option value="all">All States</option>
+                    <option value="running">Running</option>
+                    <option value="stopped">Stopped</option>
+                    <option value="pending">Pending</option>
+                    <option value="terminated">Terminated</option>
+                </select>
+                <button onclick="filterInstances()">Filter</button>
+            </div>
+            <button class="refresh-btn" onclick="loadInstances()">Refresh Instances</button>
+        </div>
+
+        <!-- Table to display running instances -->
+        <table id="instances-table">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Instance ID</th>
+                    <th>Instance Type</th>
+                    <th>State</th>
+                    <th>Launch Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="instances-tbody">
+                <!-- Instances will be dynamically populated here -->
+            </tbody>
+        </table>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons" style="margin-top: 20px;">
+            <button class="action-btn" onclick="terminateSelectedInstances()">Terminate Selected Instances</button>
+            <button class="action-btn" onclick="stopSelectedInstances()">Stop Selected Instances</button>
+        </div>
+    </div>
+
+    <script>
+        function launchInstance() {
+            const instanceType = document.getElementById('instance-type').value;
+            const amiId = document.getElementById('ami-id').value;
+
+            fetch('/launch-instance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    instance_type: instanceType,
+                    ami_id: amiId
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    loadInstances(); // Refresh the instance list
+                } else if (data.error) {
+                    alert(`Error: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function loadInstances() {
+            fetch('/list-instances')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('instances-tbody');
+                tbody.innerHTML = ''; // Clear existing rows
+
+                if (data.instances) {
+                    data.instances.forEach(instance => {
+                        const row = document.createElement('tr');
+
+                        // Select checkbox
+                        const selectCell = document.createElement('td');
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.value = instance.instance_id;
+                        selectCell.appendChild(checkbox);
+                        row.appendChild(selectCell);
+
+                        // Instance ID
+                        const idCell = document.createElement('td');
+                        idCell.textContent = instance.instance_id;
+                        row.appendChild(idCell);
+
+                        // Instance Type
+                        const typeCell = document.createElement('td');
+                        typeCell.textContent = instance.instance_type;
+                        row.appendChild(typeCell);
+
+                        // State
+                        const stateCell = document.createElement('td');
+                        stateCell.textContent = instance.state;
+                        row.appendChild(stateCell);
+
+                        // Launch Time
+                        const launchTimeCell = document.createElement('td');
+                        launchTimeCell.textContent = instance.launch_time;
+                        row.appendChild(launchTimeCell);
+
+                        // Actions (Stop/Terminate)
+                        const actionCell = document.createElement('td');
+                        const stopButton = document.createElement('button');
+                        stopButton.textContent = 'Stop';
+                        stopButton.onclick = () => stopInstance(instance.instance_id);
+                        stopButton.className = 'action-btn';
+                        actionCell.appendChild(stopButton);
+
+                        const terminateButton = document.createElement('button');
+                        terminateButton.textContent = 'Terminate';
+                        terminateButton.onclick = () => terminateInstance(instance.instance_id);
+                        terminateButton.className = 'action-btn';
+                        actionCell.appendChild(terminateButton);
+
+                        row.appendChild(actionCell);
+
+                        tbody.appendChild(row);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function filterInstances() {
+            const filterState = document.getElementById('filter-state').value;
+            const searchValue = document.getElementById('search-instances').value.toLowerCase();
+
+            fetch('/list-instances')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('instances-tbody');
+                tbody.innerHTML = ''; // Clear existing rows
+
+                if (data.instances) {
+                    data.instances.forEach(instance => {
+                        if (
+                            (filterState === 'all' || instance.state === filterState) &&
+                            (instance.instance_id.toLowerCase().includes(searchValue) ||
+                             instance.instance_type.toLowerCase().includes(searchValue))
+                        ) {
+                            const row = document.createElement('tr');
+
+                            // Select checkbox
+                            const selectCell = document.createElement('td');
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.value = instance.instance_id;
+                            selectCell.appendChild(checkbox);
+                            row.appendChild(selectCell);
+
+                            // Instance ID
+                            const idCell = document.createElement('td');
+                            idCell.textContent = instance.instance_id;
+                            row.appendChild(idCell);
+
+                            // Instance Type
+                            const typeCell = document.createElement('td');
+                            typeCell.textContent = instance.instance_type;
+                            row.appendChild(typeCell);
+
+                            // State
+                            const stateCell = document.createElement('td');
+                            stateCell.textContent = instance.state;
+                            row.appendChild(stateCell);
+
+                            // Launch Time
+                            const launchTimeCell = document.createElement('td');
+                            launchTimeCell.textContent = instance.launch_time;
+                            row.appendChild(launchTimeCell);
+
+                            // Actions (Stop/Terminate)
+                            const actionCell = document.createElement('td');
+                            const stopButton = document.createElement('button');
+                            stopButton.textContent = 'Stop';
+                            stopButton.onclick = () => stopInstance(instance.instance_id);
+                            stopButton.className = 'action-btn';
+                            actionCell.appendChild(stopButton);
+
+                            const terminateButton = document.createElement('button');
+                            terminateButton.textContent = 'Terminate';
+                            terminateButton.onclick = () => terminateInstance(instance.instance_id);
+                            terminateButton.className = 'action-btn';
+                            actionCell.appendChild(terminateButton);
+
+                            row.appendChild(actionCell);
+
+                            tbody.appendChild(row);
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function stopInstance(instanceId) {
+            fetch('/stop-instance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ instance_id: instanceId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    loadInstances(); // Refresh the instance list
+                } else if (data.error) {
+                    alert(`Error: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function terminateInstance(instanceId) {
+            fetch('/terminate-instance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ instance_id: instanceId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    loadInstances(); // Refresh the instance list
+                } else if (data.error) {
+                    alert(`Error: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function stopSelectedInstances() {
+            const checkboxes = document.querySelectorAll('#instances-tbody input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => stopInstance(checkbox.value));
+        }
+
+        function terminateSelectedInstances() {
+            const checkboxes = document.querySelectorAll('#instances-tbody input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => terminateInstance(checkbox.value));
+        }
+
+        // Load instances when the page is loaded
+        window.onload = loadInstances;
+    </script>
+</body>
+</html>

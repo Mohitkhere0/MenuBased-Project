@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Call</title>
+    <style>
+        /* Basic reset to remove default browser margins and paddings */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+    background-color: #007BFF;
+    color: white;
+    padding: 20px 0;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    }
+
+    header .logo img {
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    transition: transform 0.3s, opacity 0.3s; /* Add transition for smooth effect */
+    }
+
+    header .logo img:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+    }
+
+    nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    margin-right: 20px;
+    }
+
+    nav ul li {
+    margin-right: 50%;
+    }
+
+    nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    
+    padding: 10px;
+    transition: background-color 0.3s, color 0.3s;
+    }
+
+    nav ul li a:hover {
+    background-color: white;
+    color: #007BFF;
+    border-radius: 5px;
+    width: 933.60px;
+    height:54px;
+    }
+    .back-arrow {
+    font-size: 1.5em; /* Increase the size of the arrow */
+    margin-right: 5px; /* Space between the arrow and the text */
+    }
+    .alert-container {
+        margin-top: 20px;
+    }
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
+    .alert-error {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+
+    .container {
+            max-width: 1000px;
+            max-height: fit-content;
+            margin: auto;
+            background: white;
+            margin-top: 10px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+    margin-top: 30px;
+    font-size: 36px;
+    text-align: center;
+    color: #4CAF50;
+    }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            margin-top: 20px;
+            display: inline-block;
+            text-decoration: none;
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            margin-top: 20px;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Home">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Make a Call</h1><br><br>
+        <form id="callForm">
+            <label for="to">Phone Number:</label>
+            <input type="text" id="to" name="to" placeholder="+1234567890" required>
+            <label for="message">Message:</label>
+            <input type="text" id="message" name="message" placeholder="Hello from Flask!" required>
+            <input type="submit" value="Make Call">
+        </form>
+        <div id="responseMessage" class="message"></div>
+    </div>
+    <script>
+        document.getElementById('callForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const form = new FormData(this);
+            const to = form.get('to');
+            const message = form.get('message');
+
+            fetch('/make_call', {
+                method: 'POST',
+                body: new URLSearchParams(form),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageElement = document.getElementById('responseMessage');
+                if (data.error) {
+                    messageElement.textContent = data.error;
+                    messageElement.className = 'message error';
+                } else {
+                    messageElement.textContent = data.message + ' Call SID: ' + data.call_sid;
+                    messageElement.className = 'message success';
+                }
+            })
+            .catch(error => {
+                const messageElement = document.getElementById('responseMessage');
+                messageElement.textContent = 'An error occurred: ' + error.message;
+                messageElement.className = 'message error';
+            });
+        });
+    </script>
+</body>
+</html>

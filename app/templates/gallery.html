@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Filtered Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        header {
+        background-color: #007BFF;
+        color: white;
+        padding: 20px 0;
+        height: 54px;
+        width: 933.60;
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        }
+
+    header .logo a {
+    display: inline-block; /* Make the link inline-block for padding */
+    text-decoration: none; /* Remove underline */
+    border-radius: 10px; /* Rounded corners for the logo link */
+    width: 50px;
+    height: 50px;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background and transform */
+    }
+
+    header .logo img {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.3s, opacity 0.3s; /* Add transition for smooth effect */
+    }
+
+    header .logo img:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+    }
+
+    nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    margin-right: 20px;
+    height: 63px;
+
+    }
+
+    nav ul li {
+    margin-right: 50%;
+    ALIGN-ITEMS: center;
+    }
+
+    nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px;
+    ALIGN-ITEMS: center;
+    transition: background-color 0.3s, color 0.3s;
+    }
+
+    nav ul li a:hover {
+    background-color: white;
+    color: #007BFF;
+    border-radius: 5px;
+    }
+    .back-arrow {
+    font-size: 1.5em; /* Increase the size of the arrow */
+    margin-right: 5px; /* Space between the arrow and the text */
+    }
+
+    h1 {
+    margin-top: 30px;
+    font-size: 36px;
+    text-align: center;
+    color: #4CAF50;
+    }
+
+        div {
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 200px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+        /* Style for the .filters container */
+        .filters {
+            width: 300px; /* Set a fixed width */
+            padding: 5px; /* Add padding for spacing */
+            border: 1px solid #ccc; /* Add a border */
+            border-radius: 10px; /* Rounded corners */
+            text-align: center; /* Center-align the text */
+            margin: 20px auto; /* Center the container horizontally and add margin for spacing */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+            background-color: #f9f9f9; /* Background color */
+        }
+
+        /* Style for the h2 element */
+        .filters h2 {
+            font-size: 1.2em; /* Font size */
+            margin-bottom: 10px; /* Space below the title */
+            color: #333; /* Text color */
+        }
+
+        /* Style for the img element */
+        .filters img {
+            width: 100%; /* Make the image responsive */
+            height: 200px; /* Set a fixed height for medium size */
+            object-fit: cover; /* Ensure the image covers the area */
+            border-radius: 10px; /* Rounded corners */
+            margin-bottom: 10px; /* Space below the image */
+        }
+
+        /* Style for the download link */
+        .filters a {
+            display: inline-block; /* Make the link block-level for padding */
+            padding: 10px 20px; /* Padding for the link */
+            background-color: #007bff; /* Background color */
+            color: #fff; /* Text color */
+            text-decoration: none; /* Remove underline */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .filters a:hover {
+            background-color: #0056b3; /* Darken background on hover */
+        }
+
+        
+    </style>
+</head>
+<body>
+    <header>
+        
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='styles/windows.jpg') }}" alt="Home">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()"><span class="back-arrow">&#8592;</span>Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <h1>Filtered Images</h1>
+    
+    <div>
+        {% for name, filename in filtered_images.items() %}
+        <div class="filters">
+            <h2>{{ name }}</h2>
+            <img src="{{ url_for('download_file', filename=filename) }}" alt="{{ name }}">
+            <a href="{{ url_for('download_file', filename=filename) }}" download>Download {{ name }}</a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
